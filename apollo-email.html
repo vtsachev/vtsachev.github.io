@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved CSV Analyzer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        h1 { color: #333; }
+        #fileInput { margin-bottom: 20px; }
+        #results { white-space: pre-wrap; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-top: 20px; font-family: monospace; }
+        .copyBtn { margin-top: 10px; padding: 5px 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Improved CSV Analyzer</h1>
+    <input type="file" id="fileInput" accept=".csv">
+    <div id="results"></div>
+    <button id="copyResultsBtn" class="copyBtn">Copy Results</button>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+        document.getElementById('copyResultsBtn').addEventListener('click', copyResults);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            Papa.parse(file, {
+                header: true,
+                complete: function(results) {
+                    const cleanedData = removeTrailingEmptyRows(results.data);
+                    const analyzedData = analyzeData(cleanedData);
+                    displayResults(analyzedData);
+                }
+            });
+        }
+
+        function removeTrailingEmptyRows(data) {
+            let lastNonEmptyIndex = data.length - 1;
+            while (lastNonEmptyIndex >= 0 && isRowEmpty(data[lastNonEmptyIndex])) {
+                lastNonEmptyIndex--;
+            }
+            return data.slice(0, lastNonEmptyIndex + 1);
+        }
+
+        function isRowEmpty(row) {
+            return Object.values(row).every(value => value === "");
+        }
+
+        function parseDate(dateString) {
+            if (!dateString) {
+                throw new Error('Date string is undefined or empty');
+            }
+
+            const months = {
+                'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+                'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+            };
+
+            const regex = /(\w+)\s(\d{1,2}),\s(\d{4})\s(\d{1,2}):(\d{2})/;
+            const match = dateString.match(regex);
+
+            if (match) {
+                const [, month, day, year, hour, minute] = match;
+                return new Date(year, months[month], day, hour, minute);
+            }
+
+            const date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+
+            throw new Error(`Unable to parse date: ${dateString}`);
+        }
+
+        function isNewContact(row) {
+            return row['Sequence'] && (row['Step'] === '1' || row['Step'] === 1);
+        }
+
+        function analyzeData(data) {
+            const dailyMetrics = {};
+            const sequences = {};
+            const stages = {};
+            let totalEmails = 0;
+            let totalResponses = 0;
+            let totalNewContacts = 0;
+            const uniqueDates = new Set();
+
+            data.forEach((row, index) => {
+                try {
+                    if (!row['Sent At (PST)']) {
+                        throw new Error(`'Sent At (PST)' field is missing or empty`);
+                    }
+
+                    const sentAt = parseDate(row['Sent At (PST)']);
+                    const date = sentAt.toISOString().split('T')[0];
+                    uniqueDates.add(date);
+
+                    if (!dailyMetrics[date]) {
+                        dailyMetrics[date] = {new_contacts: 0, emails_sent: 0, responses_received: 0};
+                    }
+
+                    dailyMetrics[date].emails_sent++;
+                    totalEmails++;
+
+                    const isNew = isNewContact(row);
+                    if (isNew) {
+                        dailyMetrics[date].new_contacts++;
+                        totalNewContacts++;
+                    }
+
+                    if (row['Replied'] === 'true') {
+                        dailyMetrics[date].responses_received++;
+                        totalResponses++;
+                    }
+
+                    // Track sequence information
+                    if (row['Sequence']) {
+                        if (!sequences[row['Sequence']]) {
+                            sequences[row['Sequence']] = {sent: 0, replies: 0, new_contacts: 0};
+                        }
+                        sequences[row['Sequence']].sent++;
+                        if (row['Replied'] === 'true') {
+                            sequences[row['Sequence']].replies++;
+                        }
+                        if (isNew) {
+                            sequences[row['Sequence']].new_contacts++;
+                        }
+                    }
+
+                    // Track contact stages
+                    stages[row['Contact Stage']] = (stages[row['Contact Stage']] || 0) + 1;
+
+                } catch (error) {
+                    console.error(`Error in row ${index + 2}: ${error.message}`);
+                }
+            });
+
+            return {
+                daily_metrics: dailyMetrics,
+                sequences: sequences,
+                stages: stages,
+                total_emails: totalEmails,
+                total_responses: totalResponses,
+                total_new_contacts: totalNewContacts,
+                reply_rate: (totalResponses / totalEmails) * 100 || 0,
+                days_covered: uniqueDates.size
+            };
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            
+            let formattedResults = "This Week:\n";
+            formattedResults += `  Days Covered: ${results.days_covered}\n`;
+            formattedResults += `  Total Emails Sent: ${results.total_emails}\n`;
+            formattedResults += `  Total New Contacts Targeted: ${results.total_new_contacts}\n`;
+            formattedResults += `  Total Responses Received: ${results.total_responses}\n`;
+            formattedResults += `  Overall Reply Rate: ${results.reply_rate.toFixed(2)}%\n\n`;
+
+            formattedResults += "Daily Breakdown:\n";
+            // Sort dates in descending order
+            const sortedDates = Object.keys(results.daily_metrics).sort((a, b) => b.localeCompare(a));
+
+            sortedDates.forEach(date => {
+                const metrics = results.daily_metrics[date];
+                formattedResults += `  Date: ${date}\n`;
+                formattedResults += `    New Contacts Targeted: ${metrics.new_contacts}\n`;
+                formattedResults += `    Emails Sent: ${metrics.emails_sent}\n`;
+                formattedResults += `    Responses Received: ${metrics.responses_received}\n`;
+                formattedResults += `    Daily Reply Rate: ${((metrics.responses_received / metrics.emails_sent) * 100).toFixed(2)}%\n\n`;
+            });
+
+            // Add Active Sequences section
+            formattedResults += "Active Sequences:\n";
+            for (const [sequence, metrics] of Object.entries(results.sequences)) {
+                formattedResults += `  ${sequence}:\n`;
+                formattedResults += `    Sent: ${metrics.sent}\n`;
+                formattedResults += `    Replies: ${metrics.replies}\n`;
+                formattedResults += `    New Contacts: ${metrics.new_contacts}\n`;
+                formattedResults += `    Sequence Reply Rate: ${((metrics.replies / metrics.sent) * 100).toFixed(2)}%\n\n`;
+            }
+
+            // Add Contact Stages section
+            formattedResults += "Contact Stages:\n";
+            for (const [stage, count] of Object.entries(results.stages)) {
+                formattedResults += `  ${stage}: ${count}\n`;
+            }
+
+            // Add some basic analysis
+            formattedResults += "\nQuick Analysis:\n";
+            formattedResults += `  Most Active Day: ${getMostActiveDay(results.daily_metrics)}\n`;
+            formattedResults += `  Best Performing Sequence: ${getBestPerformingSequence(results.sequences)}\n`;
+            formattedResults += `  Most Common Contact Stage: ${getMostCommonStage(results.stages)}\n`;
+
+            resultsDiv.textContent = formattedResults;
+        }
+
+        function getMostActiveDay(dailyMetrics) {
+            return Object.entries(dailyMetrics).reduce((a, b) => a[1].emails_sent > b[1].emails_sent ? a : b)[0];
+        }
+
+        function getBestPerformingSequence(sequences) {
+            return Object.entries(sequences).reduce((a, b) => 
+                (a[1].replies / a[1].sent) > (b[1].replies / b[1].sent) ? a : b
+            )[0];
+        }
+
+        function getMostCommonStage(stages) {
+            return Object.entries(stages).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+        }
+
+        function copyResults() {
+            copyToClipboard(document.getElementById('results').textContent);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }, (err) => {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
