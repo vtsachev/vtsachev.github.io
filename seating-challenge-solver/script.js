@@ -70,29 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 homeworkButton.textContent = 'Show Answer';
                 hwState = 'uncolored';
             } else if (hwState === 'uncolored') {
-                // Prompt for the correct answer
-                const userAnswer = prompt('Which machine sends documents using a phone line?');
-                if (userAnswer && userAnswer.toLowerCase() === 'fax') {
-                    // Set final arrangement with colors
-                    placedCircles.fill(false);
-                    circleColors = {};
-                    placedCircles[1] = true;  circleColors[1]  = 'green';
-                    placedCircles[4] = true;  circleColors[4]  = 'purple';
-                    placedCircles[5] = true;  circleColors[5]  = 'purple';
-                    placedCircles[6] = true;  circleColors[6]  = 'red';
-                    placedCircles[7] = true;  circleColors[7]  = 'purple';
-                    placedCircles[9] = true;  circleColors[9]  = 'green';
-                    placedCircles[10] = true; circleColors[10] = 'purple';
-                    placedCircles[13] = true; circleColors[13] = 'blue';
-
-                    gridCells.forEach((_, i) => updateCellVisual(i));
-                    generateAdjacencyMap();
-                    handleCheck();
-                    homeworkButton.textContent = 'Homework 1';
-                    hwState = 'answer';
-                } else {
-                    showFeedback('Wrong answer');
-                }
+                // Removed: const userAnswer = prompt('Which machine sends documents using a phone line?');
+                showAnswerModal();
             } else if (hwState === 'answer') {
                 // Revert back to the uncolored Homework 1 layout
                 placedCircles.fill(false);
@@ -110,6 +89,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // New functions for custom answer modal
+    const answerModal = document.getElementById('answer-modal');
+    const answerInput = document.getElementById('answer-input');
+    const answerSubmit = document.getElementById('answer-submit');
+    const answerCancel = document.getElementById('answer-cancel');
+
+    function showAnswerModal() {
+        answerModal.classList.remove('hidden');
+        answerInput.value = '';
+        answerInput.focus();
+    }
+
+    answerSubmit.addEventListener('click', () => {
+        const userAnswer = answerInput.value.trim().toLowerCase();
+        answerModal.classList.add('hidden');
+        if (userAnswer === 'fax') {
+            // Set final arrangement with colors
+            placedCircles.fill(false);
+            circleColors = {};
+            placedCircles[1] = true;  circleColors[1]  = 'green';
+            placedCircles[4] = true;  circleColors[4]  = 'purple';
+            placedCircles[5] = true;  circleColors[5]  = 'purple';
+            placedCircles[6] = true;  circleColors[6]  = 'red';
+            placedCircles[7] = true;  circleColors[7]  = 'purple';
+            placedCircles[9] = true;  circleColors[9]  = 'green';
+            placedCircles[10] = true; circleColors[10] = 'purple';
+            placedCircles[13] = true; circleColors[13] = 'blue';
+
+            gridCells.forEach((_, i) => updateCellVisual(i));
+            generateAdjacencyMap();
+            handleCheck();
+            homeworkButton.textContent = 'Homework 1';
+            hwState = 'answer';
+        } else {
+            showFeedback('Wrong answer');
+        }
+    });
+
+    answerCancel.addEventListener('click', () => {
+        answerModal.classList.add('hidden');
+        showFeedback('Action canceled');
+    });
 
     // --- Grid Creation ---
     function createGrid() {
