@@ -4,23 +4,17 @@
 
 This web application provides an interactive interface to solve the "Math - Seating Challenge". Users can assign colors (Red, Green, Blue, Purple) to 8 individuals arranged in a specific seating layout and then validate their arrangement against a set of predefined rules.
 
-The layout consists of 8 seats arranged as follows:
-* A central column of three seats (Top, Center, Bottom).
-* One seat to the left of the Center seat.
-* A row of four seats extending horizontally to the right, starting from the seat immediately to the right of the Center seat.
-  [ ]       (Top - ID 0)
-[ ] - [ ] - [ ] - [ ] - [ ] - [ ]   (Left-ID 3, Center-ID 1, Right1-ID 4, R2-ID 5, R3-ID 6, R4-ID 7)
-[ ]       (Bottom - ID 2)
-
-*(Note: IDs shown correspond to internal element IDs used in the code)*
+This puzzle now uses a 4×4 grid. You must place exactly 8 circles in the grid during the placement phase, then assign colors to each circle in the coloring phase. The final arrangement must satisfy all rules listed below.
 
 ## How to Use
 
 1.  **Open the Application:** Open the `index.html` file in a modern web browser.
-2.  **Assign Colors:** Click on any of the 8 circles representing the seats. Each click cycles the circle's color through the following sequence:
-    * Uncolored (White) -> Red -> Green -> Blue -> Purple -> Uncolored (White) ...
-3.  **Check Validity:** Once you have assigned colors to the seats, click the **"Check Validity"** button.
-4.  **View Results:** The application will evaluate the current color arrangement against all the rules. The status for each rule will be displayed below the button:
+2.  **Phase 1 (Placement):** Click on empty squares to place exactly 8 circles, then click "Confirm Layout."
+3.  **Phase 2 (Coloring):** Click on any placed circle to cycle its color. Use "Check Validity" when you are ready.
+4.  **Reset Layout** clears all circles so you can start over.
+5.  **Homework 1 button** lets you load or reveal a preset layout and solution.
+6.  **Check Validity:** Once you have assigned colors to the seats, click the **"Check Validity"** button.
+7.  **View Results:** The application will evaluate the current color arrangement against all the rules. The status for each rule will be displayed below the button:
     * `✔️ Honored`: The current arrangement satisfies this rule.
     * `❌ Violated`: The current arrangement does not satisfy this rule.
     * `(Pending)`: The status before validation or after a change.
