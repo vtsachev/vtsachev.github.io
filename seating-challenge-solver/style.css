@@ -1,0 +1,171 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+}
+
+#instructions {
+    margin: 15px 0;
+    font-size: 1.1em;
+    color: #555;
+    min-height: 1.5em; /* Prevent layout shift */
+    text-align: center;
+}
+
+#feedback-area {
+    color: #d9534f; /* Reddish for errors/warnings */
+    min-height: 1.2em; /* Prevent layout shift */
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+/* --- Grid Layout --- */
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 70px); /* 4 columns */
+    grid-template-rows: repeat(4, 70px);    /* 4 rows */
+    gap: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #e9e9e9;
+    width: fit-content;
+}
+
+.grid-cell {
+    background-color: #f8f8f8;
+    border: 1px solid #bbb;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    position: relative; /* For potential future additions */
+}
+
+.grid-cell:not(.disabled):hover {
+    background-color: #e0e0e0;
+}
+
+/* State when cell is disabled (Phase 2, no circle) */
+.grid-cell.disabled {
+    background-color: #d0d0d0;
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: #aaa;
+    pointer-events: none; /* Explicitly disable click events */
+}
+
+.grid-cell.disabled .circle-placeholder {
+    display: none; /* Hide placeholder if cell is disabled */
+}
+
+/* Circle placeholder within the cell */
+.circle-placeholder {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background-color: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    box-sizing: border-box;
+    display: none; /* Hidden by default */
+}
+
+/* State when cell has a circle (placed) but no specific color */
+.grid-cell.has-circle .circle-placeholder {
+    display: block;
+    /* Remove background-color from here - it will be set by color classes */
+}
+
+/* --- Color Classes (Applied with higher specificity) --- */
+.grid-cell.has-circle .circle-placeholder.uncolored { 
+    background-color: #ffffff; 
+    border-color: #555; 
+}
+.grid-cell.has-circle .circle-placeholder.red { 
+    background-color: #ff4d4d; 
+    border-color: transparent; 
+}
+.grid-cell.has-circle .circle-placeholder.green { 
+    background-color: #4caf50; 
+    border-color: transparent; 
+}
+.grid-cell.has-circle .circle-placeholder.blue { 
+    background-color: #2196f3; 
+    border-color: transparent; 
+}
+.grid-cell.has-circle .circle-placeholder.purple { 
+    background-color: #9c27b0; 
+    color: white; 
+    border-color: transparent; 
+}
+
+/* --- Button Styling --- */
+#controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+#controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+#confirm-button { background-color: #5cb85c; } /* Green */
+#confirm-button:hover { background-color: #4cae4c; }
+
+#check-button { background-color: #007bff; } /* Blue */
+#check-button:hover { background-color: #0056b3; }
+
+#reset-button { background-color: #f0ad4e; } /* Orange */
+#reset-button:hover { background-color: #ec971f; }
+
+#homework-button {
+    background-color: #17a2b8; /* Teal */
+}
+#homework-button:hover {
+    background-color: #138496;
+}
+
+/* --- Results Area Styling (mostly reused) --- */
+#results-area {
+    width: 90%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+#results-area ul { list-style: none; padding: 0; margin: 0; }
+#results-area li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; display: flex; align-items: center; }
+#results-area .status { font-weight: bold; margin-left: 8px; padding: 3px 6px; border-radius: 4px; color: white; display: inline-block; }
+.icon { margin-right: 5px; font-size: 1.1em; }
+.honored { background-color: #4caf50; }
+.violated { background-color: #f44336; }
+.pending { color: #777; font-style: italic; background-color: transparent;}
+.grid-cell.has-circle {
+    z-index: 1; /* Ensure proper stacking context */
+}
+
+.grid-cell.has-circle .circle-placeholder {
+    cursor: pointer; /* Show pointer cursor to indicate clickable */
+}

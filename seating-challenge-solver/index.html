@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Challenge - Custom Layout</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Math - Seating Challenge</h1>
+
+    <div id="instructions">
+        Loading...
+    </div>
+
+    <div id="grid-container">
+        </div>
+
+    <div id="controls">
+        <button id="confirm-button">Confirm Layout</button>
+        <button id="check-button" style="display: none;">Check Validity</button>
+        <button id="reset-button">Reset Layout</button>
+        <button id="homework-button">Homework 1</button> <!-- Add Homework 1 button -->
+    </div>
+
+     <div id="feedback-area" aria-live="polite">
+        </div>
+
+    <div id="results-area">
+        <h2>Validation Results:</h2>
+        <ul>
+            <li id="rule-1">Rule 1: At least one of each color (Red, Green, Purple), exactly one Blue. <span class="status"></span></li>
+            <li id="rule-2">Rule 2: Red and Green cannot sit together. <span class="status"></span></li>
+            <li id="rule-3">Rule 3: Blue and Purple cannot sit together. <span class="status"></span></li>
+            <li id="rule-4">Rule 4: Every Red MUST sit between Purple. <span class="status"></span></li>
+            <li id="rule-5">Rule 5: At least one Purple MUST sit between Green. <span class="status"></span></li>
+            <li id="rule-6">Rule 6: At least two Purple need to sit together. <span class="status"></span></li>
+        </ul>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
