@@ -168,7 +168,6 @@ h1, h2 {
 
 #results-area li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; display: flex; align-items: center; }
 #results-area .status { font-weight: bold; margin-left: 8px; padding: 3px 6px; border-radius: 4px; color: white; display: inline-block; }
-.icon { margin-right: 5px; font-size: 1.1em; }
 .honored { background-color: #4caf50; }
 .violated { background-color: #f44336; }
 .pending { color: #777; font-style: italic; background-color: transparent;}
@@ -321,6 +320,51 @@ h1, h2 {
 .color-word {
     margin: 0 5px; /* Add horizontal spacing around colored words */
     word-break: break-word; /* Prevent overflow of colored words */
+}
+
+/* Enhanced list item styling */
+#results-area li {
+    margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    padding-right: 100px; /* Make room for the status badge */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Make status badges stay together */
+#results-area .status {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: white;
+    white-space: nowrap; /* Prevent "Not Good" from breaking */
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* For smaller screens */
+@media (max-width: 600px) {
+    #results-area li {
+        padding-right: 0; /* Remove right padding */
+        margin-bottom: 25px; /* More space between rules */
+    }
+    
+    #results-area .status {
+        position: static; /* Remove absolute positioning */
+        margin-top: 8px; /* Add top margin when it wraps */
+        display: block;
+        width: fit-content;
+        margin-left: 26px; /* Align with rule text */
+    }
+}
+
+/* Color word spacing */
+.color-word {
+    display: inline-block; /* Prevents breaking within colored words */
+    margin: 0 2px;
 }
 
 /* Responsive Design for Smaller Screens */

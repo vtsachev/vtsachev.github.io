@@ -449,33 +449,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Helper Functions ---
     function updateResult(ruleKey, isHonored) {
-        // ... (logic remains the same as previous version) ...
-         const span = resultsSpans[ruleKey];
+        const span = resultsSpans[ruleKey];
         const item = resultsItems[ruleKey];
         if (!span || !item) return;
-        const icon = isHonored ? '✔️' : '❌';
-        const existingIcon = item.querySelector('.icon');
-        if (existingIcon) existingIcon.remove();
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'icon';
-        iconSpan.textContent = icon;
-        item.insertBefore(iconSpan, span);
         span.textContent = isHonored ? 'Good' : 'Not Good';
         span.className = `status ${isHonored ? 'honored' : 'violated'}`;
     }
 
     function clearResults() {
-        // ... (logic remains the same as previous version) ...
-         Object.keys(resultsSpans).forEach(ruleKey => {
+        Object.keys(resultsSpans).forEach(ruleKey => {
             const span = resultsSpans[ruleKey];
             const item = resultsItems[ruleKey];
             if (span) {
                 span.textContent = '(Pending)';
                 span.className = 'status pending';
-            }
-            if (item) {
-                const existingIcon = item.querySelector('.icon');
-                if (existingIcon) existingIcon.remove();
             }
         });
     }
