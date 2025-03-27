@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iconSpan.className = 'icon';
         iconSpan.textContent = icon;
         item.insertBefore(iconSpan, span);
-        span.textContent = isHonored ? 'Honored' : 'Violated';
+        span.textContent = isHonored ? 'Good' : 'Not Good';
         span.className = `status ${isHonored ? 'honored' : 'violated'}`;
     }
 

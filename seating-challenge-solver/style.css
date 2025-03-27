@@ -155,7 +155,16 @@ h1, h2 {
     margin-top: 15px;
 }
 
-#results-area ul { list-style: none; padding: 0; margin: 0; }
+#results-area ul {
+    list-style: disc; /* restore bullet points */
+    padding-left: 1.5em;
+}
+#results-area li {
+    display: list-item; /* ensure bullets display */
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
 #results-area li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; display: flex; align-items: center; }
 #results-area .status { font-weight: bold; margin-left: 8px; padding: 3px 6px; border-radius: 4px; color: white; display: inline-block; }
 .icon { margin-right: 5px; font-size: 1.1em; }
@@ -306,4 +315,8 @@ h1, h2 {
     margin-top: 10px;
     display: flex;
     justify-content: space-evenly;
+}
+
+.color-word {
+    margin: 0 5px; /* Add horizontal spacing around colored words */
 }
