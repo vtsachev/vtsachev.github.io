@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- State Variables ---
     let currentPhase = 'placement'; // 'placement' or 'coloring'
-    let hwState = 'init'; // global variable to track Homework 1 button state
+    let hwState = 'init'; // global variable to track Homework button state
     let placedCircles = new Array(TOTAL_CELLS).fill(false); // Tracks if cell index has a circle
     let circleColors = {}; // Tracks color of circle at cell index { cellIndex: 'color' }
     let placedCircleIndices = []; // Stores cell indices (0-15) where circles are placed
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rule6: document.getElementById('rule-6'),
     }
     let gridCells = [];
-    const homeworkButton = document.getElementById('homework-button'); // Moved outside setupHomework1Button
+    const homeworkButton = document.getElementById('homework-button'); // Moved outside setupHomeworkButton
 
     // --- Initialization ---
     function init() {
@@ -47,19 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
         addEventListeners();
         setPhase('placement');
         clearResults();
-        setupHomework1Button(); // Add Homework 1 button functionality
+        setupHomeworkButton(); // Add Homework button functionality
     }
 
-    function setupHomework1Button() {
+    function setupHomeworkButton() {
         // Removed: const homeworkButton = document.getElementById('homework-button'); 
 
         homeworkButton.addEventListener('click', () => {
             if (hwState === 'init') {
                 setPhase('placement'); // ADDED: ensure we are in placement phase
-                // Set uncolored Homework 1 layout
+                // Set uncolored Homework layout
                 placedCircles.fill(false);
                 circleColors = {};
-                const homeworkIndices = [1, 4, 5, 6, 7, 9, 10, 13];
+                const homeworkIndices = [1, 4, 5, 6, 7, 9, 10, 14];
                 homeworkIndices.forEach(i => {
                     placedCircles[i] = true;
                     circleColors[i] = 'uncolored';
@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Removed: const userAnswer = prompt('Which machine sends documents using a phone line?');
                 showAnswerModal();
             } else if (hwState === 'answer') {
-                // Revert back to the uncolored Homework 1 layout
+                // Revert back to the uncolored Homework layout
                 placedCircles.fill(false);
                 circleColors = {};
-                const homeworkIndices = [1, 4, 5, 6, 7, 9, 10, 13];
+                const homeworkIndices = [1, 4, 5, 6, 7, 9, 10, 14];
                 homeworkIndices.forEach(i => {
                     placedCircles[i] = true;
                     circleColors[i] = 'uncolored';
@@ -115,13 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
             placedCircles[6] = true;  circleColors[6]  = 'red';
             placedCircles[7] = true;  circleColors[7]  = 'purple';
             placedCircles[9] = true;  circleColors[9]  = 'green';
-            placedCircles[10] = true; circleColors[10] = 'purple';
-            placedCircles[13] = true; circleColors[13] = 'blue';
+            placedCircles[10] = true; circleColors[10] = 'blue';
+            placedCircles[14] = true; circleColors[14] = 'green';
 
             gridCells.forEach((_, i) => updateCellVisual(i));
             generateAdjacencyMap();
             handleCheck();
-            homeworkButton.textContent = 'Homework 1';
+            homeworkButton.textContent = 'Homework';
             hwState = 'answer';
         } else {
             showFeedback('Wrong answer');
@@ -278,9 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showFeedback("Please confirm your circle placement first.");
         }
 
-        // ADDED: switch button text back to "Homework 1" if layout is no longer Homework 1 uncolored
-        if (!isHomework1UncoloredLayout()) {
-            homeworkButton.textContent = 'Homework 1';
+        // ADDED: switch button text back to "Homework" if layout is no longer Homework uncolored
+        if (!isHomeworkUncoloredLayout()) {
+            homeworkButton.textContent = 'Homework';
             hwState = 'init';
         }
     }
@@ -295,13 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
         generateAdjacencyMap();
         setPhase('coloring');
         // Detect if user has created the homework layout manually
-        if (isHomework1UncoloredLayout()) {
-            // If layout matches uncolored Homework 1, update button text/state
+        if (isHomeworkUncoloredLayout()) {
+            // If layout matches uncolored Homework, update button text/state
             homeworkButton.textContent = 'Show Answer';
             hwState = 'uncolored';
         } else {
             // Otherwise reset back to the default state
-            homeworkButton.textContent = 'Homework 1';
+            homeworkButton.textContent = 'Homework';
             hwState = 'init';
         }
     }
@@ -323,35 +323,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Logic Functions ---
     function cycleColor(index) {
+        // Skip "uncolored" after first press
+        const cycleColors = ['red', 'green', 'blue', 'purple'];
         const currentColor = circleColors[index] || 'uncolored';
-        const currentIndex = COLORS.indexOf(currentColor);
-        const nextIndex = (currentIndex + 1) % COLORS.length;
-        const nextColor = COLORS[nextIndex];
-        
-        // Update the state
-        circleColors[index] = nextColor;
-        console.log(`Cycling color at index ${index} from ${currentColor} to ${nextColor}`);
-        
-        // Force DOM refresh by directly manipulating the placeholder element
-        const cell = gridCells[index];
-        const placeholder = cell.querySelector('.circle-placeholder');
-        
-        if (placeholder) {
-            // First, remove all color classes
-            COLORS.forEach(colorName => {
-                placeholder.classList.remove(colorName);
-            });
-            
-            // Force a reflow/repaint by accessing offsetHeight
-            // This is a common trick to ensure style changes are applied immediately
-            void placeholder.offsetHeight;
-            
-            // Add the new color class
-            placeholder.classList.add(nextColor);
-            
-            // Log the class list for debugging
-            console.log("Circle classes after update:", placeholder.className);
+        if (currentColor === 'uncolored') {
+            circleColors[index] = 'red';
+        } else {
+            const currentIndex = cycleColors.indexOf(currentColor);
+            const nextIndex = (currentIndex + 1) % cycleColors.length;
+            circleColors[index] = cycleColors[nextIndex];
         }
+        updateCellVisual(index);
     }
 
     function generateAdjacencyMap() {
@@ -498,9 +480,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function isHomework1UncoloredLayout() {
-        // Check if exactly [1,4,5,6,7,9,10,13] are true and uncolored, all others false
-        const hwIndices = [1, 4, 5, 6, 7, 9, 10, 13];
+    function isHomeworkUncoloredLayout() {
+        // Check if exactly [1,4,5,6,7,9,10,14] are true and uncolored, all others false
+        const hwIndices = [1, 4, 5, 6, 7, 9, 10, 14];
         for (let i = 0; i < TOTAL_CELLS; i++) {
             const shouldBeTrue = hwIndices.includes(i);
             if (placedCircles[i] !== shouldBeTrue) return false;
