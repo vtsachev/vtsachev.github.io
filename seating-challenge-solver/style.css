@@ -153,6 +153,7 @@ h1, h2 {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-top: 15px;
+    word-break: break-word; /* Ensure long words or spans break properly */
 }
 
 #results-area ul {
@@ -319,4 +320,40 @@ h1, h2 {
 
 .color-word {
     margin: 0 5px; /* Add horizontal spacing around colored words */
+    word-break: break-word; /* Prevent overflow of colored words */
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    #results-area {
+        padding: 10px;
+        font-size: 14px; /* Reduce font size for smaller screens */
+    }
+
+    #results-area ul {
+        padding-left: 1em; /* Adjust padding for smaller screens */
+    }
+
+    #results-area li {
+        flex-wrap: wrap; /* Allow wrapping for long lines */
+        margin-bottom: 8px; /* Reduce spacing between items */
+    }
+
+    #results-area .status {
+        margin-left: 0; /* Remove left margin for better alignment */
+        margin-top: 5px; /* Add top margin for spacing when wrapping */
+    }
+
+    h1, h2 {
+        font-size: 1.5em; /* Adjust heading sizes */
+    }
+
+    #controls button {
+        font-size: 14px; /* Reduce button font size */
+        padding: 8px 16px; /* Adjust button padding */
+    }
 }
