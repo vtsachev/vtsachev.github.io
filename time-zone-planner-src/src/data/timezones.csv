@@ -1,0 +1,81 @@
+city,tz,country
+New York,America/New_York,US
+Los Angeles,America/Los_Angeles,US
+Chicago,America/Chicago,US
+Denver,America/Denver,US
+Phoenix,America/Phoenix,US
+Anchorage,America/Anchorage,US
+Honolulu,Pacific/Honolulu,US
+San Francisco,America/Los_Angeles,US
+Seattle,America/Los_Angeles,US
+Boston,America/New_York,US
+Miami,America/New_York,US
+Austin,America/Chicago,US
+Toronto,America/Toronto,CA
+Vancouver,America/Vancouver,CA
+London,Europe/London,UK
+Paris,Europe/Paris,FR
+Berlin,Europe/Berlin,DE
+Amsterdam,Europe/Amsterdam,NL
+Zurich,Europe/Zurich,CH
+Madrid,Europe/Madrid,ES
+Rome,Europe/Rome,IT
+Stockholm,Europe/Stockholm,SE
+Warsaw,Europe/Warsaw,PL
+Prague,Europe/Prague,CZ
+Vienna,Europe/Vienna,AT
+Athens,Europe/Athens,GR
+Helsinki,Europe/Helsinki,FI
+Lisbon,Europe/Lisbon,PT
+Dublin,Europe/Dublin,IE
+Moscow,Europe/Moscow,RU
+Istanbul,Europe/Istanbul,TR
+Dubai,Asia/Dubai,AE
+Mumbai,Asia/Kolkata,IN
+Delhi,Asia/Kolkata,IN
+Bangalore,Asia/Kolkata,IN
+Kolkata,Asia/Kolkata,IN
+Kathmandu,Asia/Kathmandu,NP
+Bangkok,Asia/Bangkok,TH
+Singapore,Asia/Singapore,SG
+Hong Kong,Asia/Hong_Kong,HK
+Shanghai,Asia/Shanghai,CN
+Beijing,Asia/Shanghai,CN
+Seoul,Asia/Seoul,KR
+Tokyo,Asia/Tokyo,JP
+Taipei,Asia/Taipei,TW
+Jakarta,Asia/Jakarta,ID
+Manila,Asia/Manila,PH
+Sydney,Australia/Sydney,AU
+Melbourne,Australia/Melbourne,AU
+Brisbane,Australia/Brisbane,AU
+Perth,Australia/Perth,AU
+Auckland,Pacific/Auckland,NZ
+São Paulo,America/Sao_Paulo,BR
+Buenos Aires,America/Argentina/Buenos_Aires,AR
+Mexico City,America/Mexico_City,MX
+Bogotá,America/Bogota,CO
+Lima,America/Lima,PE
+Santiago,America/Santiago,CL
+Cairo,Africa/Cairo,EG
+Lagos,Africa/Lagos,NG
+Nairobi,Africa/Nairobi,KE
+Johannesburg,Africa/Johannesburg,ZA
+Cape Town,Africa/Johannesburg,ZA
+Casablanca,Africa/Casablanca,MA
+Tehran,Asia/Tehran,IR
+Riyadh,Asia/Riyadh,SA
+Karachi,Asia/Karachi,PK
+Dhaka,Asia/Dhaka,BD
+Hanoi,Asia/Ho_Chi_Minh,VN
+Kuala Lumpur,Asia/Kuala_Lumpur,MY
+Reykjavik,Atlantic/Reykjavik,IS
+Doha,Asia/Qatar,QA
+Muscat,Asia/Muscat,OM
+Jerusalem,Asia/Jerusalem,IL
+Oslo,Europe/Oslo,NO
+Copenhagen,Europe/Copenhagen,DK
+Budapest,Europe/Budapest,HU
+Brussels,Europe/Brussels,BE
+Edinburgh,Europe/London,UK
+Montevideo,America/Montevideo,UY

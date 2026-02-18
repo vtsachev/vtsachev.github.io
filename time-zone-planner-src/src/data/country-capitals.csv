@@ -1,0 +1,251 @@
+city,tz,country
+Kabul,Asia/Kabul,Afghanistan
+Mariehamn,Europe/Mariehamn,Åland Islands
+Tirana,Europe/Tirane,Albania
+Algiers,Africa/Algiers,Algeria
+Pago Pago,Pacific/Apia,American Samoa
+Andorra la Vella,Europe/Andorra,Andorra
+Luanda,Africa/Luanda,Angola
+The Valley,America/Anguilla,Anguilla
+Antarctica,Antarctica/Troll,Antarctica
+Saint John's,America/Antigua,Antigua and Barbuda
+Buenos Aires,America/Argentina/Buenos_Aires,Argentina
+Yerevan,Asia/Yerevan,Armenia
+Oranjestad,America/Aruba,Aruba
+Canberra,Australia/Sydney,Australia
+Vienna,Europe/Vienna,Austria
+Baku,Asia/Baku,Azerbaijan
+Nassau,America/Nassau,Bahamas
+Manama,Asia/Bahrain,Bahrain
+Dhaka,Asia/Dhaka,Bangladesh
+Bridgetown,America/Barbados,Barbados
+Minsk,Europe/Minsk,Belarus
+Brussels,Europe/Brussels,Belgium
+Belmopan,America/Belize,Belize
+Porto-Novo,Africa/Porto-Novo,Benin
+Hamilton,Atlantic/Bermuda,Bermuda
+Thimphu,Asia/Thimphu,Bhutan
+Sucre,America/La_Paz,Bolivia
+Sarajevo,Europe/Sarajevo,Bosnia and Herzegovina
+Gaborone,Africa/Gaborone,Botswana
+Bouvet Island,UTC,Bouvet Island
+Brasília,America/Sao_Paulo,Brazil
+Diego Garcia,Indian/Chagos,British Indian Ocean Territory
+Road Town,America/Tortola,British Virgin Islands
+Bandar Seri Begawan,Asia/Brunei,Brunei
+Sofia,Europe/Sofia,Bulgaria
+Ouagadougou,Africa/Ouagadougou,Burkina Faso
+Gitega,Africa/Bujumbura,Burundi
+Phnom Penh,Asia/Phnom_Penh,Cambodia
+Yaoundé,Africa/Douala,Cameroon
+Ottawa,America/Toronto,Canada
+Praia,Atlantic/Cape_Verde,Cape Verde
+Kralendijk,America/Caracas,Caribbean Netherlands
+George Town,America/Cayman,Cayman Islands
+Bangui,Africa/Bangui,Central African Republic
+N'Djamena,Africa/Ndjamena,Chad
+Santiago,America/Santiago,Chile
+Beijing,Asia/Shanghai,China
+Flying Fish Cove,Indian/Christmas,Christmas Island
+West Island,Indian/Cocos,Cocos (Keeling) Islands
+Bogotá,America/Bogota,Colombia
+Moroni,Indian/Comoro,Comoros
+Avarua,Pacific/Rarotonga,Cook Islands
+San José,America/Costa_Rica,Costa Rica
+Zagreb,Europe/Zagreb,Croatia
+Havana,America/Havana,Cuba
+Willemstad,America/Curacao,Curaçao
+Nicosia,Asia/Nicosia,Cyprus
+Prague,Europe/Prague,Czechia
+Copenhagen,Europe/Copenhagen,Denmark
+Djibouti,Africa/Djibouti,Djibouti
+Roseau,America/Dominica,Dominica
+Santo Domingo,America/Santo_Domingo,Dominican Republic
+Kinshasa,Africa/Kinshasa,DR Congo
+Quito,America/Guayaquil,Ecuador
+Cairo,Africa/Cairo,Egypt
+San Salvador,America/El_Salvador,El Salvador
+Malabo,Africa/Malabo,Equatorial Guinea
+Asmara,Africa/Asmara,Eritrea
+Tallinn,Europe/Tallinn,Estonia
+Mbabane,Africa/Mbabane,Eswatini
+Addis Ababa,Africa/Addis_Ababa,Ethiopia
+Stanley,Atlantic/Stanley,Falkland Islands
+Tórshavn,Atlantic/Faroe,Faroe Islands
+Suva,Pacific/Fiji,Fiji
+Helsinki,Europe/Helsinki,Finland
+Paris,Europe/Paris,France
+Cayenne,America/Cayenne,French Guiana
+Papeetē,Pacific/Tahiti,French Polynesia
+Port-aux-Français,Europe/Paris,French Southern and Antarctic Lands
+Libreville,Africa/Libreville,Gabon
+Banjul,Africa/Banjul,Gambia
+Tbilisi,Asia/Tbilisi,Georgia
+Berlin,Europe/Berlin,Germany
+Accra,Africa/Accra,Ghana
+Gibraltar,Europe/Gibraltar,Gibraltar
+Athens,Europe/Athens,Greece
+Nuuk,America/Godthab,Greenland
+St. George's,Atlantic/Bermuda,Grenada
+Basse-Terre,America/Guadeloupe,Guadeloupe
+Hagåtña,Pacific/Guam,Guam
+Guatemala City,America/Guatemala,Guatemala
+St. Peter Port,Europe/Guernsey,Guernsey
+Conakry,Africa/Conakry,Guinea
+Bissau,Africa/Bissau,Guinea-Bissau
+Georgetown,America/Guyana,Guyana
+Port-au-Prince,America/Port-au-Prince,Haiti
+Heard Island and McDonald Islands,Indian/Kerguelen,Heard Island and McDonald Islands
+Tegucigalpa,America/Tegucigalpa,Honduras
+City of Victoria,Asia/Hong_Kong,Hong Kong
+Budapest,Europe/Budapest,Hungary
+Reykjavik,Atlantic/Reykjavik,Iceland
+New Delhi,Asia/Kolkata,India
+Jakarta,Asia/Jakarta,Indonesia
+Tehran,Asia/Tehran,Iran
+Baghdad,Asia/Baghdad,Iraq
+Dublin,Europe/Dublin,Ireland
+Douglas,Europe/Isle_of_Man,Isle of Man
+Jerusalem,Asia/Jerusalem,Israel
+Rome,Europe/Rome,Italy
+Yamoussoukro,Africa/Abidjan,Ivory Coast
+Kingston,America/Jamaica,Jamaica
+Tokyo,Asia/Tokyo,Japan
+Saint Helier,Europe/Jersey,Jersey
+Amman,Asia/Amman,Jordan
+Astana,Asia/Almaty,Kazakhstan
+Nairobi,Africa/Nairobi,Kenya
+South Tarawa,Pacific/Tarawa,Kiribati
+Pristina,Europe/Belgrade,Kosovo
+Kuwait City,Asia/Kuwait,Kuwait
+Bishkek,Asia/Bishkek,Kyrgyzstan
+Vientiane,Asia/Vientiane,Laos
+Riga,Europe/Riga,Latvia
+Beirut,Asia/Beirut,Lebanon
+Maseru,Africa/Maseru,Lesotho
+Monrovia,Africa/Monrovia,Liberia
+Tripoli,Africa/Tripoli,Libya
+Vaduz,Europe/Vaduz,Liechtenstein
+Vilnius,Europe/Vilnius,Lithuania
+Luxembourg,Europe/Luxembourg,Luxembourg
+Macau,Asia/Macau,Macau
+Antananarivo,Indian/Antananarivo,Madagascar
+Lilongwe,Africa/Blantyre,Malawi
+Kuala Lumpur,Asia/Kuala_Lumpur,Malaysia
+Malé,Indian/Maldives,Maldives
+Bamako,Africa/Bamako,Mali
+Valletta,Europe/Malta,Malta
+Majuro,Pacific/Majuro,Marshall Islands
+Fort-de-France,America/Martinique,Martinique
+Nouakchott,Africa/Nouakchott,Mauritania
+Port Louis,Indian/Mauritius,Mauritius
+Mamoudzou,Indian/Mayotte,Mayotte
+Mexico City,America/Mexico_City,Mexico
+Palikir,Pacific/Pohnpei,Micronesia
+Chișinău,Europe/Chisinau,Moldova
+Monaco,Europe/Monaco,Monaco
+Ulan Bator,Asia/Ulaanbaatar,Mongolia
+Podgorica,Europe/Podgorica,Montenegro
+Plymouth,America/Montserrat,Montserrat
+Rabat,Africa/Casablanca,Morocco
+Maputo,Africa/Maputo,Mozambique
+Naypyidaw,Asia/Yangon,Myanmar
+Windhoek,Africa/Windhoek,Namibia
+Yaren,Pacific/Nauru,Nauru
+Kathmandu,Asia/Kathmandu,Nepal
+Amsterdam,Europe/Amsterdam,Netherlands
+Nouméa,Pacific/Noumea,New Caledonia
+Wellington,Pacific/Auckland,New Zealand
+Managua,America/Managua,Nicaragua
+Niamey,Africa/Niamey,Niger
+Abuja,Africa/Lagos,Nigeria
+Alofi,Pacific/Niue,Niue
+Kingston,Pacific/Norfolk,Norfolk Island
+Pyongyang,Asia/Pyongyang,North Korea
+Skopje,Europe/Skopje,North Macedonia
+Saipan,Pacific/Saipan,Northern Mariana Islands
+Oslo,Europe/Oslo,Norway
+Muscat,Asia/Muscat,Oman
+Islamabad,Asia/Karachi,Pakistan
+Ngerulmud,Pacific/Palau,Palau
+Ramallah,Asia/Hebron,Palestine
+Panama City,America/Panama,Panama
+Port Moresby,Pacific/Port_Moresby,Papua New Guinea
+Asunción,America/Asuncion,Paraguay
+Lima,America/Lima,Peru
+Manila,Asia/Manila,Philippines
+Adamstown,Pacific/Pitcairn,Pitcairn Islands
+Warsaw,Europe/Warsaw,Poland
+Lisbon,Europe/Lisbon,Portugal
+San Juan,America/Puerto_Rico,Puerto Rico
+Doha,Asia/Qatar,Qatar
+Brazzaville,Africa/Brazzaville,Republic of the Congo
+Saint-Denis,Indian/Reunion,Réunion
+Bucharest,Europe/Bucharest,Romania
+Moscow,Europe/Moscow,Russia
+Kigali,Africa/Kigali,Rwanda
+Gustavia,America/St_Barthelemy,Saint Barthélemy
+Jamestown,Atlantic/St_Helena,"Saint Helena, Ascension and Tristan da Cunha"
+Basseterre,America/St_Kitts,Saint Kitts and Nevis
+Castries,America/St_Vincent,Saint Lucia
+Marigot,America/Marigot,Saint Martin
+Saint-Pierre,America/St_Johns,Saint Pierre and Miquelon
+Kingstown,America/St_Vincent,Saint Vincent and the Grenadines
+Apia,Pacific/Apia,Samoa
+City of San Marino,Europe/San_Marino,San Marino
+São Tomé,Africa/Sao_Tome,São Tomé and Príncipe
+Riyadh,Asia/Riyadh,Saudi Arabia
+Dakar,Africa/Dakar,Senegal
+Belgrade,Europe/Belgrade,Serbia
+Victoria,Indian/Mahe,Seychelles
+Freetown,Africa/Freetown,Sierra Leone
+Singapore,Asia/Singapore,Singapore
+Philipsburg,America/Lower_Princes,Sint Maarten
+Bratislava,Europe/Bratislava,Slovakia
+Ljubljana,Europe/Ljubljana,Slovenia
+Honiara,Pacific/Guadalcanal,Solomon Islands
+Mogadishu,Africa/Mogadishu,Somalia
+Pretoria,Africa/Johannesburg,South Africa
+King Edward Point,Atlantic/South_Georgia,South Georgia
+Seoul,Asia/Seoul,South Korea
+Juba,Africa/Juba,South Sudan
+Madrid,Europe/Madrid,Spain
+Sri Jayawardenepura Kotte,Asia/Colombo,Sri Lanka
+Khartoum,Africa/Khartoum,Sudan
+Paramaribo,America/Paramaribo,Suriname
+Longyearbyen,Arctic/Longyearbyen,Svalbard and Jan Mayen
+Stockholm,Europe/Stockholm,Sweden
+Bern,Europe/Zurich,Switzerland
+Damascus,Asia/Damascus,Syria
+Taipei,Asia/Taipei,Taiwan
+Dushanbe,Asia/Dushanbe,Tajikistan
+Dodoma,Africa/Dar_es_Salaam,Tanzania
+Bangkok,Asia/Bangkok,Thailand
+Dili,Asia/Makassar,Timor-Leste
+Lomé,Africa/Lome,Togo
+Fakaofo,Pacific/Pago_Pago,Tokelau
+Nuku'alofa,Pacific/Tongatapu,Tonga
+Port of Spain,America/Port_of_Spain,Trinidad and Tobago
+Tunis,Africa/Tunis,Tunisia
+Ankara,Europe/Istanbul,Turkey
+Ashgabat,Asia/Ashgabat,Turkmenistan
+Cockburn Town,America/Santo_Domingo,Turks and Caicos Islands
+Funafuti,Pacific/Funafuti,Tuvalu
+Kampala,Africa/Kampala,Uganda
+Kyiv,Europe/Kiev,Ukraine
+Abu Dhabi,Asia/Dubai,United Arab Emirates
+London,Europe/London,United Kingdom
+"Washington, D.C.",America/New_York,United States
+Washington DC,Pacific/Midway,United States Minor Outlying Islands
+Charlotte Amalie,America/St_Thomas,United States Virgin Islands
+Montevideo,America/Montevideo,Uruguay
+Tashkent,Asia/Tashkent,Uzbekistan
+Port Vila,Pacific/Efate,Vanuatu
+Vatican City,Europe/Rome,Vatican City
+Caracas,America/Caracas,Venezuela
+Hanoi,Asia/Bangkok,Vietnam
+Mata-Utu,Pacific/Apia,Wallis and Futuna
+El Aaiún,Africa/Lusaka,Western Sahara
+Sana'a,Asia/Aden,Yemen
+Lusaka,Africa/Lusaka,Zambia
+Harare,Africa/Harare,Zimbabwe
