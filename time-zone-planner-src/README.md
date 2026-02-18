@@ -14,6 +14,7 @@ A React app for planning meetings across 2-5 timezones with a 24-hour horizontal
 - Best-overlap markers and grouped meeting-window summary.
 - Click any UTC hour column to compare local times in all selected zones.
 - Day-of-week markers in each row make cross-date overlaps visible (e.g., Sun vs Mon).
+- 14-day date strip anchored to the top timezone to preview future-day overlap windows.
 - Drag-and-drop row reordering.
 - Current-time marker.
 - Internet-synced clock (TimeAPI.io + WorldTimeAPI fallback) with local fallback.

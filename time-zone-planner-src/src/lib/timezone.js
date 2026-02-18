@@ -123,9 +123,89 @@ function getLocalDateParts(tz, date) {
   };
 }
 
+function toDateKey(year, month, day) {
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 export function getLocalDateKey(tz, date) {
   const local = getLocalDateParts(tz, date);
-  return `${local.year}-${String(local.month).padStart(2, "0")}-${String(local.day).padStart(2, "0")}`;
+  return toDateKey(local.year, local.month, local.day);
+}
+
+function parseDateKey(dateKey) {
+  const match = String(dateKey || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+
+  const year = Number.parseInt(match[1], 10);
+  const month = Number.parseInt(match[2], 10);
+  const day = Number.parseInt(match[3], 10);
+
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return null;
+  }
+
+  return { year, month, day };
+}
+
+export function addDaysToDateKey(dateKey, days) {
+  const parsed = parseDateKey(dateKey);
+  if (!parsed) {
+    return null;
+  }
+
+  const shifted = new Date(
+    Date.UTC(parsed.year, parsed.month - 1, parsed.day + Number(days || 0)),
+  );
+
+  return toDateKey(
+    shifted.getUTCFullYear(),
+    shifted.getUTCMonth() + 1,
+    shifted.getUTCDate(),
+  );
+}
+
+export function getUtcTimestampForZoneDateStart(tz, dateKey) {
+  const parsed = parseDateKey(dateKey);
+  if (!parsed) {
+    return NaN;
+  }
+
+  const targetLocalDateKey = toDateKey(parsed.year, parsed.month, parsed.day);
+  const localAsUtcMs = Date.UTC(parsed.year, parsed.month - 1, parsed.day, 0, 0, 0);
+  const fixedOffsetMinutes = parseFixedOffsetMinutes(tz);
+
+  if (fixedOffsetMinutes !== null) {
+    return localAsUtcMs - fixedOffsetMinutes * 60_000;
+  }
+
+  let utcGuess = localAsUtcMs;
+
+  for (let i = 0; i < 5; i += 1) {
+    const offsetMinutes = getOffsetMinutes(tz, new Date(utcGuess));
+    const nextGuess = localAsUtcMs - offsetMinutes * 60_000;
+
+    if (Math.abs(nextGuess - utcGuess) < 1000) {
+      utcGuess = nextGuess;
+      break;
+    }
+
+    utcGuess = nextGuess;
+  }
+
+  // Safety adjustment for zones with uncommon midnight transitions.
+  for (let i = 0; i < 6; i += 1) {
+    const localDateKey = getLocalDateKey(tz, new Date(utcGuess));
+    if (localDateKey === targetLocalDateKey) {
+      break;
+    }
+
+    const direction = localDateKey < targetLocalDateKey ? 1 : -1;
+    utcGuess += direction * 60 * 60 * 1000;
+  }
+
+  return utcGuess;
 }
 
 function formatWithZone(tz, key, options, date) {

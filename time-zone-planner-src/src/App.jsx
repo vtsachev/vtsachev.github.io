@@ -8,14 +8,16 @@ import { TIMEZONE_DATA, isKnownTimezoneEntry } from "./data/timezones";
 import { computeOverlap, getHourCategory } from "./lib/overlap";
 import { useInternetClock } from "./lib/internetClock";
 import {
+  addDaysToDateKey,
   formatCurrentTimeInZone,
   formatDateInZone,
   formatOffsetLabel,
   formatTimeInZoneAtDate,
   formatTimeOfDay,
   getDateAtUtcHour,
+  getLocalDateKey,
   getLocalMinutesOfDay,
-  getUtcDayStart,
+  getUtcTimestampForZoneDateStart,
   isValidTimezoneIdentifier,
 } from "./lib/timezone";
 import "./App.css";
@@ -40,6 +42,7 @@ const INITIAL_ZONES = [
 
 export default function App() {
   const [zones, setZones] = useState(INITIAL_ZONES);
+  const [selectedDayOffset, setSelectedDayOffset] = useState(0);
   const [selectedUtcHour, setSelectedUtcHour] = useState(null);
   const [draggedZoneId, setDraggedZoneId] = useState(null);
   const [dropTargetZoneId, setDropTargetZoneId] = useState(null);
@@ -54,7 +57,45 @@ export default function App() {
     syncClock,
   } = useInternetClock();
 
-  const timelineStartUtc = useMemo(() => getUtcDayStart(now), [now]);
+  const anchorZone = zones[0];
+  const anchorTodayKey = useMemo(
+    () => getLocalDateKey(anchorZone.tz, now),
+    [anchorZone.tz, now],
+  );
+
+  const dateOptions = useMemo(() => {
+    return Array.from({ length: 14 }, (_, offset) => {
+      const dateKey = addDaysToDateKey(anchorTodayKey, offset);
+      const utcTimestamp = getUtcTimestampForZoneDateStart(anchorZone.tz, dateKey);
+      const dateAtZoneMidnight = new Date(utcTimestamp);
+
+      return {
+        offset,
+        dateKey,
+        label: formatDateInZone(anchorZone.tz, dateAtZoneMidnight, {
+          weekday: "short",
+          month: "numeric",
+          day: "numeric",
+        }),
+        fullLabel: formatDateInZone(anchorZone.tz, dateAtZoneMidnight, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }),
+      };
+    });
+  }, [anchorTodayKey, anchorZone.tz]);
+
+  const selectedDate =
+    dateOptions.find((option) => option.offset === selectedDayOffset) || dateOptions[0];
+
+  const timelineStartUtc = useMemo(() => {
+    if (!selectedDate) {
+      return getUtcTimestampForZoneDateStart(anchorZone.tz, anchorTodayKey);
+    }
+
+    return getUtcTimestampForZoneDateStart(anchorZone.tz, selectedDate.dateKey);
+  }, [anchorTodayKey, anchorZone.tz, selectedDate]);
 
   const overlap = useMemo(
     () => computeOverlap(zones, timelineStartUtc),
@@ -71,15 +112,15 @@ export default function App() {
       return null;
     }
 
-    const selectedDate = getDateAtUtcHour(timelineStartUtc, selectedUtcHour);
+    const selectedDateTime = getDateAtUtcHour(timelineStartUtc, selectedUtcHour);
 
     return zones.map((zone) => {
-      const localMinutes = getLocalMinutesOfDay(zone.tz, selectedDate);
+      const localMinutes = getLocalMinutesOfDay(zone.tz, selectedDateTime);
 
       return {
         id: zone.id,
         city: zone.city,
-        timeLabel: formatTimeInZoneAtDate(zone.tz, selectedDate),
+        timeLabel: formatTimeInZoneAtDate(zone.tz, selectedDateTime),
         category: getHourCategory(localMinutes),
       };
     });
@@ -90,8 +131,8 @@ export default function App() {
       return "";
     }
 
-    const selectedDate = getDateAtUtcHour(timelineStartUtc, selectedUtcHour);
-    return formatTimeInZoneAtDate("UTC", selectedDate);
+    const selectedDateTime = getDateAtUtcHour(timelineStartUtc, selectedUtcHour);
+    return formatTimeInZoneAtDate("UTC", selectedDateTime);
   }, [selectedUtcHour, timelineStartUtc]);
 
   const zoneClockDetails = useMemo(
@@ -213,6 +254,33 @@ export default function App() {
 
         <Legend />
 
+        <section className="date-picker" aria-label="Timeline date selector">
+          <div className="date-picker-header">
+            <span>
+              Timeline date anchored to top zone: <strong>{anchorZone.city}</strong>
+            </span>
+            <span>
+              Selected: <strong>{selectedDate?.fullLabel}</strong>
+            </span>
+          </div>
+          <div className="date-picker-list">
+            {dateOptions.map((option) => (
+              <button
+                key={option.dateKey}
+                type="button"
+                className={`date-pill${option.offset === selectedDayOffset ? " is-active" : ""}`}
+                onClick={() => {
+                  setSelectedDayOffset(option.offset);
+                  setSelectedUtcHour(null);
+                }}
+              >
+                <span>{option.label}</span>
+                {option.offset === 0 && <em>Today</em>}
+              </button>
+            ))}
+          </div>
+        </section>
+
         <section className="timeline-wrap">
           <div className="timeline-hours-row">
             <div className="timezone-meta-spacer">
@@ -245,6 +313,7 @@ export default function App() {
               }}
               isDragging={draggedZoneId === zone.id}
               isDropTarget={dropTargetZoneId === zone.id && draggedZoneId !== zone.id}
+              showCurrentMarker={selectedDayOffset === 0}
             />
           ))}
         </section>

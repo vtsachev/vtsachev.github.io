@@ -189,6 +189,67 @@ input {
   background: rgba(255, 255, 255, 0.85);
 }
 
+.date-picker {
+  margin-bottom: 12px;
+  border: 1px solid var(--bg-soft);
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  margin-bottom: 8px;
+}
+
+.date-picker-header strong {
+  color: #e2e8f0;
+}
+
+.date-picker-list {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.date-pill {
+  border: 1px solid #334155;
+  background: #101d33;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 5px 9px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.date-pill em {
+  color: #94a3b8;
+  font-style: normal;
+  font-size: 0.66rem;
+}
+
+.date-pill.is-active {
+  border-color: #38bdf8;
+  background: #152a42;
+  color: #f8fafc;
+}
+
+.date-pill:hover {
+  border-color: #475569;
+}
+
 .timeline-wrap {
   display: flex;
   flex-direction: column;
@@ -649,6 +710,11 @@ input {
 
   .timeline-hours-row {
     display: none;
+  }
+
+  .date-picker-header {
+    flex-direction: column;
+    gap: 4px;
   }
 
   .timezone-row {

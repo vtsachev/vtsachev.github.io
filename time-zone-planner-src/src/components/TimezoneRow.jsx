@@ -27,6 +27,7 @@ export function TimezoneRow({
   onDragEnd,
   isDragging,
   isDropTarget,
+  showCurrentMarker = true,
 }) {
   const slotData = useMemo(
     () =>
@@ -108,11 +109,13 @@ export function TimezoneRow({
       </div>
 
       <div className="timezone-row-grid">
-        <div
-          className="current-time-marker"
-          style={{ left: currentMarkerLeft }}
-          aria-hidden="true"
-        />
+        {showCurrentMarker && (
+          <div
+            className="current-time-marker"
+            style={{ left: currentMarkerLeft }}
+            aria-hidden="true"
+          />
+        )}
         {slotData.map((slot, index) => {
           const previous = index > 0 ? slotData[index - 1] : null;
           const showDayMarker =
