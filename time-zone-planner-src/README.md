@@ -5,6 +5,7 @@ A React app for planning meetings across 2-5 timezones with a 24-hour horizontal
 ## Features
 
 - Add timezones by city, IANA name, country, or UTC/GMT offset search.
+- Search results include each option's current UTC offset for quick comparison.
 - Four-tier hour quality bands per row:
   - core: 9a-5p
   - flex: 7-9a, 5-7p
@@ -12,9 +13,10 @@ A React app for planning meetings across 2-5 timezones with a 24-hour horizontal
   - off-hours: everything else
 - Best-overlap markers and grouped meeting-window summary.
 - Click any UTC hour column to compare local times in all selected zones.
+- Day-of-week markers in each row make cross-date overlaps visible (e.g., Sun vs Mon).
 - Drag-and-drop row reordering.
 - Current-time marker.
-- Internet-synced clock (WorldTimeAPI) with local fallback.
+- Internet-synced clock (TimeAPI.io + WorldTimeAPI fallback) with local fallback.
 - DST and half/quarter-hour offset support via `Intl.DateTimeFormat`.
 
 ## Data Management
@@ -29,7 +31,7 @@ At load time, the app merges:
 - curated CSV entries
 - country-capital CSV entries
 - all browser-supported IANA timezone identifiers
-- generated UTC/GMT offset aliases (e.g. `UTC+5`, `GMT-3`)
+- generated UTC/GMT offset aliases with quarter-hour granularity (e.g. `UTC+5:30`, `GMT-3:45`)
 
 CSV data is validated for:
 

@@ -22,33 +22,65 @@ function formatOffsetLabel(prefix, offsetMinutes) {
 }
 
 function buildOffsetRows() {
-  const offsets = [];
+  const offsets = new Set();
+  const quarterHourIncrements = [0, 15, 30, 45];
 
   for (let hour = -12; hour <= 14; hour += 1) {
-    offsets.push(hour * 60);
+    for (const minutes of quarterHourIncrements) {
+      if (hour === 14 && minutes > 0) {
+        continue;
+      }
+      if (hour === -12 && minutes > 0) {
+        continue;
+      }
+
+      const sign = hour >= 0 ? 1 : -1;
+      offsets.add(hour * 60 + sign * minutes);
+    }
   }
 
-  return offsets.flatMap((offsetMinutes) => {
-    const utcLabel = formatOffsetLabel("UTC", offsetMinutes);
-    const gmtLabel = formatOffsetLabel("GMT", offsetMinutes);
+  const rows = Array.from(offsets)
+    .sort((a, b) => a - b)
+    .flatMap((offsetMinutes) => {
+      const utcLabel = formatOffsetLabel("UTC", offsetMinutes);
+      const gmtLabel = formatOffsetLabel("GMT", offsetMinutes);
 
-    return [
-      {
-        city: utcLabel,
-        tz: utcLabel,
-        country: "Offset",
-        source: "offset",
-        rank: 2,
-      },
-      {
-        city: gmtLabel,
-        tz: gmtLabel,
-        country: "Offset",
-        source: "offset",
-        rank: 2,
-      },
-    ];
-  });
+      return [
+        {
+          city: utcLabel,
+          tz: utcLabel,
+          country: "Offset",
+          source: "offset",
+          rank: 2,
+        },
+        {
+          city: gmtLabel,
+          tz: gmtLabel,
+          country: "Offset",
+          source: "offset",
+          rank: 2,
+        },
+      ];
+    });
+
+  rows.push(
+    {
+      city: "UTC",
+      tz: "UTC",
+      country: "Offset",
+      source: "offset",
+      rank: 2,
+    },
+    {
+      city: "GMT",
+      tz: "GMT",
+      country: "Offset",
+      source: "offset",
+      rank: 2,
+    },
+  );
+
+  return rows;
 }
 
 function humanizeIanaTimezone(tz) {

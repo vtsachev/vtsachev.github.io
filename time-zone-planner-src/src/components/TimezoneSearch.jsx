@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { normalizeTimezoneSearchQuery } from "../data/timezones";
+import { getTimezoneEntryKey } from "../data/timezoneCatalog";
+import { formatOffsetLabel } from "../lib/timezone";
 
 export function TimezoneSearch({
   timezoneData,
   zones,
   onAddZone,
+  now,
   maxZones = 5,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +16,10 @@ export function TimezoneSearch({
   const inputRef = useRef(null);
 
   const canAddMore = zones.length < maxZones;
+  const selectedZoneKeys = useMemo(
+    () => new Set(zones.map((zone) => getTimezoneEntryKey(zone))),
+    [zones],
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -90,6 +97,9 @@ export function TimezoneSearch({
     setQuery("");
   };
 
+  const findFirstAddableCandidate = () =>
+    filtered.find((candidate) => !selectedZoneKeys.has(getTimezoneEntryKey(candidate)));
+
   return (
     <div ref={wrapperRef} className="timezone-search">
       {!isOpen ? (
@@ -114,7 +124,10 @@ export function TimezoneSearch({
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Enter" && filtered.length > 0) {
-                const first = filtered[0];
+                const first = findFirstAddableCandidate();
+                if (!first) {
+                  return;
+                }
                 const alreadyAdded = zones.some(
                   (zone) => zone.city === first.city && zone.tz === first.tz,
                 );
@@ -129,9 +142,8 @@ export function TimezoneSearch({
               </div>
             )}
             {filtered.map((candidate) => {
-              const alreadyAdded = zones.some(
-                (zone) => zone.city === candidate.city && zone.tz === candidate.tz,
-              );
+              const alreadyAdded = selectedZoneKeys.has(getTimezoneEntryKey(candidate));
+              const offsetLabel = formatOffsetLabel(candidate.tz, now);
 
               return (
                 <button
@@ -145,7 +157,9 @@ export function TimezoneSearch({
                     <strong>{candidate.city}</strong>
                     <small>{candidate.country}</small>
                   </span>
-                  <em>{candidate.tz}</em>
+                  <em>
+                    {candidate.tz} · {offsetLabel}
+                  </em>
                 </button>
               );
             })}

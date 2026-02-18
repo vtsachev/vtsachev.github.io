@@ -123,6 +123,11 @@ function getLocalDateParts(tz, date) {
   };
 }
 
+export function getLocalDateKey(tz, date) {
+  const local = getLocalDateParts(tz, date);
+  return `${local.year}-${String(local.month).padStart(2, "0")}-${String(local.day).padStart(2, "0")}`;
+}
+
 function formatWithZone(tz, key, options, date) {
   const fixedOffsetMinutes = parseFixedOffsetMinutes(tz);
 
@@ -198,6 +203,38 @@ export function formatTimeInZoneAtDate(tz, date) {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
+    },
+    date,
+  );
+}
+
+export function formatDateInZone(
+  tz,
+  date,
+  {
+    weekday = "short",
+    month = "short",
+    day = "numeric",
+  } = {},
+) {
+  return formatWithZone(
+    tz,
+    `date:${weekday}:${month}:${day}`,
+    {
+      weekday,
+      month,
+      day,
+    },
+    date,
+  );
+}
+
+export function formatWeekdayInZone(tz, date) {
+  return formatWithZone(
+    tz,
+    "weekday",
+    {
+      weekday: "short",
     },
     date,
   );

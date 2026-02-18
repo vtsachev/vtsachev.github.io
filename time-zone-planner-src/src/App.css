@@ -89,15 +89,67 @@ input {
   text-transform: uppercase;
 }
 
-.clock-card strong {
-  color: #f8fafc;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.9rem;
-}
-
 .clock-card small {
   color: #94a3b8;
   font-size: 0.72rem;
+}
+
+.clock-zone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.clock-zone-item {
+  border: 1px solid #22354d;
+  background: #0d192d;
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  align-items: baseline;
+}
+
+.clock-zone-city {
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.clock-zone-time {
+  color: #f8fafc;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.clock-zone-meta {
+  grid-column: 1 / -1;
+  color: #8ea0b7;
+  font-size: 0.68rem;
+}
+
+.clock-card-error {
+  color: #fca5a5;
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+.clock-refresh-button {
+  margin-top: 2px;
+  align-self: flex-start;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.clock-refresh-button:hover {
+  border-color: #475569;
 }
 
 .legend {
@@ -247,6 +299,10 @@ input {
   white-space: nowrap;
 }
 
+.timezone-row-day-span {
+  color: #7d8da3;
+}
+
 .dot-separator {
   margin: 0 6px;
 }
@@ -304,6 +360,26 @@ input {
   font-weight: 600;
   letter-spacing: -0.01em;
   pointer-events: none;
+}
+
+.hour-cell-day-marker {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  z-index: 1;
+  font-size: 0.48rem;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(241, 245, 249, 0.95);
+  background: rgba(2, 6, 23, 0.35);
+  border-radius: 999px;
+  padding: 1px 4px;
+  pointer-events: none;
+}
+
+.hour-cell-day-marker + .hour-cell-label {
+  margin-top: 7px;
 }
 
 .hour-cell-best {

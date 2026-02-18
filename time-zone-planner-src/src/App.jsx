@@ -8,6 +8,9 @@ import { TIMEZONE_DATA, isKnownTimezoneEntry } from "./data/timezones";
 import { computeOverlap, getHourCategory } from "./lib/overlap";
 import { useInternetClock } from "./lib/internetClock";
 import {
+  formatCurrentTimeInZone,
+  formatDateInZone,
+  formatOffsetLabel,
   formatTimeInZoneAtDate,
   formatTimeOfDay,
   getDateAtUtcHour,
@@ -47,6 +50,8 @@ export default function App() {
     source: clockSource,
     hasInternetSync,
     lastSyncedAtMs,
+    lastError,
+    syncClock,
   } = useInternetClock();
 
   const timelineStartUtc = useMemo(() => getUtcDayStart(now), [now]);
@@ -88,6 +93,18 @@ export default function App() {
     const selectedDate = getDateAtUtcHour(timelineStartUtc, selectedUtcHour);
     return formatTimeInZoneAtDate("UTC", selectedDate);
   }, [selectedUtcHour, timelineStartUtc]);
+
+  const zoneClockDetails = useMemo(
+    () =>
+      zones.map((zone) => ({
+        id: zone.id,
+        city: zone.city,
+        currentTime: formatCurrentTimeInZone(zone.tz, now),
+        currentDate: formatDateInZone(zone.tz, now),
+        offsetLabel: formatOffsetLabel(zone.tz, now),
+      })),
+    [zones, now],
+  );
 
   const addZone = useCallback((candidate) => {
     setZones((current) => {
@@ -169,14 +186,28 @@ export default function App() {
           </div>
 
           <aside className="clock-card" aria-live="polite">
-            <span className="clock-card-label">Current UTC</span>
-            <strong>{formatTimeInZoneAtDate("UTC", now)}</strong>
+            <span className="clock-card-label">Current times ({zones.length})</span>
+            <div className="clock-zone-list">
+              {zoneClockDetails.map((zoneClock) => (
+                <div key={zoneClock.id} className="clock-zone-item">
+                  <span className="clock-zone-city">{zoneClock.city}</span>
+                  <span className="clock-zone-time">{zoneClock.currentTime}</span>
+                  <small className="clock-zone-meta">
+                    {zoneClock.currentDate} · {zoneClock.offsetLabel}
+                  </small>
+                </div>
+              ))}
+            </div>
             <small>
               {clockSource}
               {hasInternetSync && lastSyncedAtMs
                 ? ` · synced ${formatTimeInZoneAtDate("UTC", new Date(lastSyncedAtMs))}`
                 : ""}
             </small>
+            {lastError && <small className="clock-card-error">Sync error: {lastError}</small>}
+            <button type="button" className="clock-refresh-button" onClick={syncClock}>
+              Sync now
+            </button>
           </aside>
         </header>
 
@@ -228,6 +259,7 @@ export default function App() {
           timezoneData={TIMEZONE_DATA}
           zones={zones}
           onAddZone={addZone}
+          now={now}
           maxZones={MAX_ZONES}
         />
 

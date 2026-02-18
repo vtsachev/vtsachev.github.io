@@ -2,6 +2,7 @@ import { CATEGORY_META } from "../lib/overlap";
 
 export function HourCell({
   label,
+  dayLabel,
   category,
   isSelected,
   isBestHour,
@@ -18,9 +19,10 @@ export function HourCell({
         color: meta.text,
       }}
       onClick={onClick}
-      title={label}
-      aria-label={`Select ${label}`}
+      title={dayLabel ? `${dayLabel} ${label}` : label}
+      aria-label={`Select ${dayLabel ? `${dayLabel} ` : ""}${label}`}
     >
+      {dayLabel && <span className="hour-cell-day-marker">{dayLabel}</span>}
       <span className="hour-cell-label">{label}</span>
       {isBestHour && <span className="hour-cell-best" aria-hidden="true" />}
     </button>

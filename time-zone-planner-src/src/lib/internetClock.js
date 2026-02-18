@@ -1,16 +1,84 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const WORLD_TIME_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
+const CLOCK_SOURCES = [
+  {
+    name: "TimeAPI.io",
+    url: "https://timeapi.io/api/Time/current/zone?timeZone=UTC",
+    parseTimestamp(payload) {
+      return Date.parse(payload?.dateTime || "");
+    },
+  },
+  {
+    name: "WorldTimeAPI",
+    url: "https://worldtimeapi.org/api/timezone/Etc/UTC",
+    parseTimestamp(payload) {
+      if (Number.isFinite(payload?.unixtime)) {
+        return payload.unixtime * 1000;
+      }
+      return Date.parse(payload?.utc_datetime || payload?.datetime || "");
+    },
+  },
+];
 
-function getCurrentClientSnapshot() {
+const REQUEST_TIMEOUT_MS = 4000;
+
+function getCurrentClientSnapshot(source = "Local clock") {
   const nowMs = Date.now();
   return {
     baseTimeMs: nowMs,
     baseCapturedAtMs: nowMs,
-    source: "Local clock",
+    source,
     lastSyncedAtMs: null,
     hasInternetSync: false,
+    lastError: null,
   };
+}
+
+async function fetchJsonWithTimeout(url, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    return response.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function fetchUtcTimeFromProviders() {
+  const errors = [];
+
+  for (const provider of CLOCK_SOURCES) {
+    try {
+      const payload = await fetchJsonWithTimeout(provider.url, REQUEST_TIMEOUT_MS);
+      const timestampMs = provider.parseTimestamp(payload);
+
+      if (!Number.isFinite(timestampMs)) {
+        throw new Error("Provider returned invalid timestamp");
+      }
+
+      return {
+        source: provider.name,
+        timestampMs,
+      };
+    } catch (error) {
+      errors.push(`${provider.name}: ${error.message}`);
+    }
+  }
+
+  throw new Error(errors.join(" | "));
 }
 
 export function useInternetClock() {
@@ -19,36 +87,33 @@ export function useInternetClock() {
 
   const syncClock = useCallback(async () => {
     try {
-      const response = await fetch(WORLD_TIME_URL, { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Clock sync failed (${response.status})`);
-      }
-
-      const payload = await response.json();
-      const serverMs = Number.isFinite(payload.unixtime)
-        ? payload.unixtime * 1000
-        : Date.parse(payload.utc_datetime || payload.datetime || "");
-
-      if (!Number.isFinite(serverMs)) {
-        throw new Error("Clock sync returned invalid timestamp.");
-      }
+      const { source, timestampMs } = await fetchUtcTimeFromProviders();
 
       setClockState({
-        baseTimeMs: serverMs,
+        baseTimeMs: timestampMs,
         baseCapturedAtMs: Date.now(),
-        source: "WorldTimeAPI",
+        source,
         lastSyncedAtMs: Date.now(),
         hasInternetSync: true,
+        lastError: null,
       });
-    } catch {
+    } catch (error) {
       setClockState((previous) => {
         if (previous.hasInternetSync) {
-          return previous;
+          const staleSource = previous.source.endsWith(" (stale)")
+            ? previous.source
+            : `${previous.source} (stale)`;
+
+          return {
+            ...previous,
+            source: staleSource,
+            lastError: error.message,
+          };
         }
 
         return {
-          ...getCurrentClientSnapshot(),
-          source: "Local clock fallback",
+          ...getCurrentClientSnapshot("Local clock fallback"),
+          lastError: error.message,
         };
       });
     }
@@ -78,6 +143,7 @@ export function useInternetClock() {
     source: clockState.source,
     hasInternetSync: clockState.hasInternetSync,
     lastSyncedAtMs: clockState.lastSyncedAtMs,
+    lastError: clockState.lastError,
     syncClock,
   };
 }
