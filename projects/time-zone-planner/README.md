@@ -2,6 +2,11 @@
 
 A React app for planning meetings across 2-5 timezones with a 24-hour horizontal grid.
 
+This project is organized as:
+
+- `app/`: source code and build tooling
+- `index.html` + `assets/` at the project root: deployed static output for GitHub Pages
+
 ## Features
 
 - Add timezones by city, IANA name, country, or UTC/GMT offset search.
@@ -24,8 +29,8 @@ A React app for planning meetings across 2-5 timezones with a 24-hour horizontal
 
 Timezone options are maintained separately in CSV files:
 
-- `src/data/timezones.csv`
-- `src/data/country-capitals.csv`
+- `app/src/data/timezones.csv`
+- `app/src/data/country-capitals.csv`
 
 At load time, the app merges:
 
@@ -49,9 +54,12 @@ CSV data is validated for:
 - `src/data/timezones.csv`: timezone dataset
 - `src/data/country-capitals.csv`: country-capital timezone dataset
 
+All paths above are relative to `app/`.
+
 ## Run
 
 ```bash
+cd app
 npm install
 npm run dev
 ```
@@ -59,8 +67,11 @@ npm run dev
 ## Validate
 
 ```bash
+cd app
 npm run validate:timezones
 npm run generate:country-capitals
 npm run lint
 npm run build
 ```
+
+`npm run build` writes deploy-ready files to this project root (`../`) so the app is hosted at `/projects/time-zone-planner/`.
