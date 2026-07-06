@@ -6,11 +6,19 @@ import tzLookup from "tz-lookup";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// NOTE: restcountries v3.1 has been deprecated. This regenerate-from-scratch
+// script may fail against the live API. To only add/refresh the `code` and
+// `region` columns on the existing, hand-vetted CSV, prefer:
+//   node scripts/enrich-country-capitals.mjs
 const SOURCE_URL =
   "https://restcountries.com/v3.1/all?fields=name,capital,capitalInfo,cca2";
 
+// Overrides for capitals where tz-lookup on the source lat/lng is wrong or
+// missing. `AS` (American Samoa / Pago Pago) is UTC-11 — the raw lookup once
+// returned Samoa's Pacific/Apia (UTC+13), a full-day error.
 const FALLBACK_TIMEZONE_BY_CODE = {
   AQ: "Antarctica/Troll",
+  AS: "Pacific/Pago_Pago",
   BV: "UTC",
   HM: "Indian/Kerguelen",
   MO: "Asia/Macau",

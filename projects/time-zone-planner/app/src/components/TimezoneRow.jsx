@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { HourCell } from "./HourCell";
 import { getHourCategory } from "../lib/overlap";
+import { flagEmoji, normalizeCountryCode } from "../lib/geo";
 import {
   formatDateInZone,
   formatCurrentTimeInZone,
@@ -14,6 +15,8 @@ import {
 
 export function TimezoneRow({
   zone,
+  index,
+  zoneCount,
   now,
   timelineStartUtc,
   selectedUtcHour,
@@ -21,6 +24,7 @@ export function TimezoneRow({
   canRemove,
   onSelectHour,
   onRemove,
+  onMove,
   onDragStart,
   onDragOver,
   onDrop,
@@ -54,10 +58,14 @@ export function TimezoneRow({
   const daySpanStart = formatWeekdayInZone(zone.tz, timelineStartDate);
   const daySpanEnd = formatWeekdayInZone(zone.tz, timelineEndDate);
   const daySpanLabel =
-    daySpanStart === daySpanEnd ? daySpanStart : `${daySpanStart} -> ${daySpanEnd}`;
+    daySpanStart === daySpanEnd ? daySpanStart : `${daySpanStart} → ${daySpanEnd}`;
 
   const currentUtcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
   const currentMarkerLeft = `${(currentUtcMinutes / 1440) * 100}%`;
+
+  const flag = zone.flag || flagEmoji(zone.code || normalizeCountryCode(zone.country));
+  const isFirst = index === 0;
+  const isLast = index === zoneCount - 1;
 
   return (
     <div
@@ -81,17 +89,47 @@ export function TimezoneRow({
     >
       <div className="timezone-row-meta">
         <div className="timezone-row-top">
+          <span className="drag-handle" aria-hidden="true" title="Drag to reorder">
+            ⠿
+          </span>
+          {flag && (
+            <span className="timezone-row-flag" aria-hidden="true">
+              {flag}
+            </span>
+          )}
           <span className="timezone-row-city">{zone.city}</span>
-          <button
-            type="button"
-            className="remove-zone-button"
-            disabled={!canRemove}
-            onClick={() => onRemove(zone.id)}
-            title={canRemove ? "Remove timezone" : "At least 2 zones are required"}
-            aria-label={`Remove ${zone.city}`}
-          >
-            ×
-          </button>
+          <div className="timezone-row-actions">
+            <button
+              type="button"
+              className="reorder-button"
+              disabled={isFirst}
+              onClick={() => onMove?.(zone.id, -1)}
+              aria-label={`Move ${zone.city} up`}
+              title="Move up"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className="reorder-button"
+              disabled={isLast}
+              onClick={() => onMove?.(zone.id, 1)}
+              aria-label={`Move ${zone.city} down`}
+              title="Move down"
+            >
+              ↓
+            </button>
+            <button
+              type="button"
+              className="remove-zone-button"
+              disabled={!canRemove}
+              onClick={() => onRemove(zone.id)}
+              title={canRemove ? "Remove timezone" : "At least 2 zones are required"}
+              aria-label={`Remove ${zone.city}`}
+            >
+              ×
+            </button>
+          </div>
         </div>
         <div className="timezone-row-subtitle">
           <span>{zone.tz}</span>
@@ -116,10 +154,10 @@ export function TimezoneRow({
             aria-hidden="true"
           />
         )}
-        {slotData.map((slot, index) => {
-          const previous = index > 0 ? slotData[index - 1] : null;
+        {slotData.map((slot, slotIndex) => {
+          const previous = slotIndex > 0 ? slotData[slotIndex - 1] : null;
           const showDayMarker =
-            index === 0 || previous?.localDateKey !== slot.localDateKey;
+            slotIndex === 0 || previous?.localDateKey !== slot.localDateKey;
 
           return (
             <HourCell

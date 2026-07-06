@@ -4,6 +4,11 @@ import {
   getTimezoneEntryKey,
   parseAndValidateTimezoneCsv,
 } from "./timezoneCatalog";
+import {
+  flagEmoji,
+  normalizeCountryCode,
+  regionFromTz,
+} from "../lib/geo";
 
 const { rows: curatedRows } = parseAndValidateTimezoneCsv(curatedTimezoneCsv);
 const { rows: capitalRows } = parseAndValidateTimezoneCsv(countryCapitalsCsv);
@@ -110,8 +115,25 @@ function normalizeSearchValue(value) {
     .trim();
 }
 
+function decorateGeo(entry) {
+  const code = entry.code
+    ? String(entry.code).toUpperCase()
+    : normalizeCountryCode(entry.country);
+  const region = entry.region || regionFromTz(entry.tz);
+  const isBrowsable = entry.source === "curated" || entry.source === "capital";
+
+  return {
+    ...entry,
+    code,
+    region,
+    flag: flagEmoji(code),
+    isBrowsable,
+  };
+}
+
 function addSearchFields(entry) {
-  const searchRaw = `${entry.city} ${entry.country} ${entry.tz}`.toLowerCase();
+  const searchRaw =
+    `${entry.city} ${entry.country} ${entry.tz} ${entry.region || ""}`.toLowerCase();
   return {
     ...entry,
     searchRaw,
@@ -139,7 +161,7 @@ const mergedMap = new Map();
 ].forEach((entry) => {
   const key = getTimezoneEntryKey(entry);
   if (!mergedMap.has(key)) {
-    mergedMap.set(key, addSearchFields(entry));
+    mergedMap.set(key, addSearchFields(decorateGeo(entry)));
   }
 });
 

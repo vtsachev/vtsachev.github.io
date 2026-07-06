@@ -326,10 +326,56 @@ input {
   font-weight: 700;
   color: #f8fafc;
   font-size: 0.92rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drag-handle {
+  color: #475569;
+  cursor: grab;
+  font-size: 0.9rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.timezone-row-flag {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.timezone-row-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.reorder-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.reorder-button:disabled {
+  color: #334155;
+  cursor: not-allowed;
+}
+
+.reorder-button:not(:disabled):hover {
+  border-color: #334155;
+  background: #111f36;
+  color: #e2e8f0;
 }
 
 .remove-zone-button {
-  margin-left: auto;
   border: 1px solid transparent;
   background: transparent;
   color: #94a3b8;
@@ -577,6 +623,7 @@ input {
   background: transparent;
   color: #e2e8f0;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   text-align: left;
@@ -584,10 +631,25 @@ input {
   cursor: pointer;
 }
 
-.timezone-result-item span {
+.timezone-result-item .result-flag {
+  font-size: 1.15rem;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.timezone-result-item .result-main {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.timezone-result-item .result-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-direction: row;
 }
 
 .timezone-result-item strong {
@@ -597,6 +659,44 @@ input {
 .timezone-result-item small {
   color: #94a3b8;
   font-size: 0.72rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  flex: 0 0 auto;
+}
+
+.badge-capital {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.badge-curated {
+  color: #fcd34d;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.32);
+}
+
+.badge-iana {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(59, 130, 246, 0.32);
+}
+
+.badge-offset {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.3);
 }
 
 .timezone-result-item em {
@@ -604,6 +704,8 @@ input {
   font-style: normal;
   font-size: 0.7rem;
   font-family: "JetBrains Mono", monospace;
+  flex: 0 0 auto;
+  text-align: right;
 }
 
 .timezone-result-item:hover:not(:disabled) {
@@ -708,8 +810,17 @@ input {
     width: 100%;
   }
 
+  /* Keep the hour ruler on mobile, aligned above the full-width row grids. */
   .timeline-hours-row {
+    gap: 0;
+  }
+
+  .timeline-hours-row .timezone-meta-spacer {
     display: none;
+  }
+
+  .timeline-hours-grid span {
+    font-size: 0.5rem;
   }
 
   .date-picker-header {
@@ -720,6 +831,14 @@ input {
   .timezone-row {
     flex-direction: column;
     gap: 0;
+  }
+
+  .timezone-row-grid {
+    border-top: 1px solid var(--bg-soft);
+  }
+
+  .hour-cell-label {
+    font-size: 0.5rem;
   }
 
   .timezone-row-meta {
@@ -744,4 +863,137 @@ input {
   .best-overlap-card strong {
     min-width: 90px;
   }
+
+  .timezone-search-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .use-my-tz {
+    width: 100%;
+  }
+}
+
+/* ---- Share link + copy/export actions ---- */
+.share-button {
+  margin-top: 12px;
+  border: 1px solid #2a3b53;
+  background: #111f36;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.share-button:hover {
+  border-color: #38bdf8;
+  color: #f8fafc;
+}
+
+.selected-summary-actions,
+.best-overlap-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.selected-summary-actions {
+  margin-left: auto;
+}
+
+.best-overlap-actions {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #22354d;
+}
+
+.window-action {
+  border: 1px solid var(--border);
+  background: #0d192d;
+  color: #cbd5e1;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.window-action:hover {
+  border-color: #38bdf8;
+  color: #f8fafc;
+}
+
+/* ---- Search: region browse + local timezone ---- */
+.timezone-search-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #1f2f45;
+  background: #0c162a;
+}
+
+.region-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.region-chip {
+  border: 1px solid #334155;
+  background: #101d33;
+  color: #cbd5e1;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.region-chip:hover {
+  border-color: #475569;
+}
+
+.region-chip.is-active {
+  border-color: #38bdf8;
+  background: #152a42;
+  color: #f8fafc;
+}
+
+.use-my-tz {
+  border: 1px solid #2a3b53;
+  background: #111f36;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.use-my-tz:not(:disabled):hover {
+  border-color: #38bdf8;
+  color: #f8fafc;
+}
+
+.use-my-tz:disabled {
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* ---- Accessibility: visible keyboard focus ---- */
+:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.hour-cell:focus-visible {
+  outline-offset: -2px;
+  z-index: 4;
 }

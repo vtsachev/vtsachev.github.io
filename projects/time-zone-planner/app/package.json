@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validate:timezones": "node scripts/validate-timezones.mjs",
-    "generate:country-capitals": "node scripts/generate-country-capitals.mjs"
+    "generate:country-capitals": "node scripts/generate-country-capitals.mjs",
+    "enrich:country-capitals": "node scripts/enrich-country-capitals.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

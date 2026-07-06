@@ -1,12 +1,15 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BestOverlapSummary } from "./components/BestOverlapSummary";
 import { Legend } from "./components/Legend";
 import { SelectedHourSummary } from "./components/SelectedHourSummary";
 import { TimezoneRow } from "./components/TimezoneRow";
 import { TimezoneSearch } from "./components/TimezoneSearch";
 import { TIMEZONE_DATA, isKnownTimezoneEntry } from "./data/timezones";
+import { getTimezoneEntryKey } from "./data/timezoneCatalog";
 import { computeOverlap, getHourCategory } from "./lib/overlap";
 import { useInternetClock } from "./lib/internetClock";
+import { copyText } from "./lib/share";
+import { getShareUrl, parseZonesFromQuery, syncUrl } from "./lib/urlState";
 import {
   addDaysToDateKey,
   formatCurrentTimeInZone,
@@ -24,6 +27,7 @@ import "./App.css";
 
 const MIN_ZONES = 2;
 const MAX_ZONES = 5;
+const DAY_COUNT = 14;
 
 const INITIAL_ZONES = [
   {
@@ -31,22 +35,76 @@ const INITIAL_ZONES = [
     city: "San Francisco",
     tz: "America/Los_Angeles",
     country: "United States",
+    code: "US",
   },
   {
     id: 2,
     city: "New York",
     tz: "America/New_York",
     country: "United States",
+    code: "US",
   },
 ];
 
+const ENTRY_BY_KEY = new Map(
+  TIMEZONE_DATA.map((entry) => [getTimezoneEntryKey(entry), entry]),
+);
+
+// Build starting state from the URL (shareable links) or fall back to defaults.
+function hydrateInitialState() {
+  if (typeof window === "undefined") {
+    return { zones: INITIAL_ZONES, dayOffset: 0, nextId: 3 };
+  }
+
+  const { zones: parsed, dayOffset } = parseZonesFromQuery();
+  const seen = new Set();
+  const zones = [];
+  let nextId = 1;
+
+  for (const candidate of parsed) {
+    if (zones.length >= MAX_ZONES) break;
+    const key = getTimezoneEntryKey(candidate);
+    if (seen.has(key)) continue;
+
+    const known = ENTRY_BY_KEY.get(key);
+    const base =
+      known ||
+      (isValidTimezoneIdentifier(candidate.tz)
+        ? { city: candidate.city, tz: candidate.tz, country: "" }
+        : null);
+    if (!base) continue;
+
+    seen.add(key);
+    zones.push({
+      id: nextId,
+      city: base.city,
+      tz: base.tz,
+      country: base.country || "",
+      code: base.code || "",
+    });
+    nextId += 1;
+  }
+
+  const clampedDay = Math.min(Math.max(dayOffset, 0), DAY_COUNT - 1);
+
+  if (zones.length >= MIN_ZONES) {
+    return { zones, dayOffset: clampedDay, nextId };
+  }
+  return { zones: INITIAL_ZONES, dayOffset: 0, nextId: 3 };
+}
+
+const INITIAL_STATE = hydrateInitialState();
+
 export default function App() {
-  const [zones, setZones] = useState(INITIAL_ZONES);
-  const [selectedDayOffset, setSelectedDayOffset] = useState(0);
+  const [zones, setZones] = useState(INITIAL_STATE.zones);
+  const [selectedDayOffset, setSelectedDayOffset] = useState(
+    INITIAL_STATE.dayOffset,
+  );
   const [selectedUtcHour, setSelectedUtcHour] = useState(null);
   const [draggedZoneId, setDraggedZoneId] = useState(null);
   const [dropTargetZoneId, setDropTargetZoneId] = useState(null);
-  const nextIdRef = useRef(3);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const nextIdRef = useRef(INITIAL_STATE.nextId);
 
   const {
     now,
@@ -57,6 +115,11 @@ export default function App() {
     syncClock,
   } = useInternetClock();
 
+  // Keep the URL in sync so the current plan is always shareable.
+  useEffect(() => {
+    syncUrl(zones, selectedDayOffset);
+  }, [zones, selectedDayOffset]);
+
   const anchorZone = zones[0];
   const anchorTodayKey = useMemo(
     () => getLocalDateKey(anchorZone.tz, now),
@@ -64,7 +127,7 @@ export default function App() {
   );
 
   const dateOptions = useMemo(() => {
-    return Array.from({ length: 14 }, (_, offset) => {
+    return Array.from({ length: DAY_COUNT }, (_, offset) => {
       const dateKey = addDaysToDateKey(anchorTodayKey, offset);
       const utcTimestamp = getUtcTimestampForZoneDateStart(anchorZone.tz, dateKey);
       const dateAtZoneMidnight = new Date(utcTimestamp);
@@ -169,7 +232,13 @@ export default function App() {
         return current;
       }
 
-      const nextZone = { ...candidate, id: nextIdRef.current };
+      const nextZone = {
+        id: nextIdRef.current,
+        city: candidate.city,
+        tz: candidate.tz,
+        country: candidate.country || "",
+        code: candidate.code || "",
+      };
       nextIdRef.current += 1;
       return [...current, nextZone];
     });
@@ -182,6 +251,20 @@ export default function App() {
       }
 
       return current.filter((zone) => zone.id !== id);
+    });
+  }, []);
+
+  const moveZone = useCallback((id, direction) => {
+    setZones((current) => {
+      const index = current.findIndex((zone) => zone.id === id);
+      const target = index + direction;
+      if (index === -1 || target < 0 || target >= current.length) {
+        return current;
+      }
+      const reordered = [...current];
+      const [moved] = reordered.splice(index, 1);
+      reordered.splice(target, 0, moved);
+      return reordered;
     });
   }, []);
 
@@ -211,6 +294,14 @@ export default function App() {
     [draggedZoneId],
   );
 
+  const handleCopyLink = useCallback(async () => {
+    const ok = await copyText(getShareUrl());
+    if (ok) {
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 1800);
+    }
+  }, []);
+
   const canRemove = zones.length > MIN_ZONES;
 
   return (
@@ -218,12 +309,19 @@ export default function App() {
       <main className="planner">
         <header className="app-header">
           <div>
-            <h1>Timezone Overlap Finder</h1>
+            <h1>Time Zone Planner</h1>
             <p>
-              Plan meetings across {zones.length} timezones. Drag rows to reorder,
-              click any column to compare local times, and use the yellow markers for
-              top overlap.
+              Find the best time to meet across {zones.length} time zones. Drag or
+              use the arrows to reorder, click any column to compare local times, and
+              use the yellow markers for top overlap.
             </p>
+            <button
+              type="button"
+              className="share-button"
+              onClick={handleCopyLink}
+            >
+              {linkCopied ? "✓ Link copied" : "🔗 Copy shareable link"}
+            </button>
           </div>
 
           <aside className="clock-card" aria-live="polite">
@@ -284,7 +382,7 @@ export default function App() {
         <section className="timeline-wrap">
           <div className="timeline-hours-row">
             <div className="timezone-meta-spacer">
-              <span>Rows are draggable</span>
+              <span>Reorder with drag or ↑ ↓</span>
             </div>
             <div className="timeline-hours-grid">
               {Array.from({ length: 24 }, (_, hour) => (
@@ -293,10 +391,12 @@ export default function App() {
             </div>
           </div>
 
-          {zones.map((zone) => (
+          {zones.map((zone, index) => (
             <TimezoneRow
               key={zone.id}
               zone={zone}
+              index={index}
+              zoneCount={zones.length}
               now={now}
               timelineStartUtc={timelineStartUtc}
               selectedUtcHour={selectedUtcHour}
@@ -304,6 +404,7 @@ export default function App() {
               canRemove={canRemove}
               onSelectHour={setSelectedUtcHour}
               onRemove={removeZone}
+              onMove={moveZone}
               onDragStart={setDraggedZoneId}
               onDragOver={setDropTargetZoneId}
               onDrop={handleDrop}

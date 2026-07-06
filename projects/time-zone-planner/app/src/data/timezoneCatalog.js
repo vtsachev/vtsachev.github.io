@@ -133,6 +133,9 @@ function toPublicRow(row) {
     city: row.city,
     tz: row.tz,
     country: row.country,
+    // Optional enrichment columns (present in country-capitals.csv).
+    code: row.code || "",
+    region: row.region || "",
   };
 }
 
